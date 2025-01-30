@@ -1,0 +1,21 @@
+Bootstrap: localimage
+From: rocm-base.sif
+
+# %setup
+# 	mkdir -p downloads
+# 	cd downloads
+# 	if [ ! -f aocl-linux-aocc-5.0.0-1.x86_64.rpm ]; then
+# 		wget https://download.amd.com/developer/eula/aocl/aocl-5-0/aocl-linux-aocc-5.0.0-1.x86_64.rpm
+# 	fi
+
+    # if [ ! -f ./v3.9.1.tar.gz ]; then
+    #     wget https://github.com/Reference-LAPACK/lapack/archive/refs/tags/v3.9.1.tar.gz
+    # fi
+
+# %files
+#     downloads/aocl-linux-aocc-5.0.0-1.x86_64.rpm /tmp/aocl/
+
+%post
+    zypper refresh
+    zypper --non-interactive install fmt-devel python312-pipx ninja
+    zypper -n clean

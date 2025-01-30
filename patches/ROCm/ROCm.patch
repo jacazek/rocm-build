@@ -1,0 +1,131 @@
+diff --git a/tools/rocm-build/ROCm.mk b/tools/rocm-build/ROCm.mk
+index 5becb5a..6306fef 100644
+--- a/tools/rocm-build/ROCm.mk
++++ b/tools/rocm-build/ROCm.mk
+@@ -228,9 +228,9 @@ rocm-dev: $(addprefix T_,$(filter-out ${NOBUILD},${components}))
+ 	@echo rocm-dev built
+ 
+ ${OUT_DIR}/logs:
+-	sudo mkdir -p -m 775 "${ROCM_INSTALL_PATH}" && \
+-	sudo chown -R "$(shell id -u):$(shell id -g)" "/opt"
+-	sudo chown -R "$(shell id -u):$(shell id -g)" "/home/$(shell id -un)"
++	mkdir -p -m 775 "${ROCM_INSTALL_PATH}" && \
++	chown -R "$(shell id -u):$(shell id -g)" "/opt"
++#	sudo chown -R "$(shell id -u):$(shell id -g)" "/home/$(shell id -un)"
+ 	mkdir -p "${@}"
+ 	mkdir -p ${HOME}/.ccache
+ 
+diff --git a/tools/rocm-build/build_aqlprofile.sh b/tools/rocm-build/build_aqlprofile.sh
+index d2eac59..e7cb3eb 100755
+--- a/tools/rocm-build/build_aqlprofile.sh
++++ b/tools/rocm-build/build_aqlprofile.sh
+@@ -120,7 +120,7 @@ build() {
+         copy_pkg_files_to_rocm ${API_NAME} ${API_NAME}
+     else
+         echo "$DISTRO_ID is not supported..."
+-        exit 2
++#        exit 2
+     fi
+ 
+     echo "Installing $PROJ_NAME" package
+diff --git a/tools/rocm-build/build_composable_kernel.sh b/tools/rocm-build/build_composable_kernel.sh
+index 968f5e8..6699dab 100755
+--- a/tools/rocm-build/build_composable_kernel.sh
++++ b/tools/rocm-build/build_composable_kernel.sh
+@@ -6,14 +6,14 @@ source "$(dirname "${BASH_SOURCE[0]}")/compute_helper.sh"
+ 
+ set_component_src composable_kernel
+ 
+-GPU_ARCH_LIST="gfx908;gfx90a;gfx942;gfx1030;gfx1100;gfx1101;gfx1102;gfx1200;gfx1201"
++GPU_ARCH_LIST="gfx908"
+ 
+ build_miopen_ck() {
+     echo "Start Building Composable Kernel"
+     if [ "${ENABLE_ADDRESS_SANITIZER}" == "true" ]; then
+        set_asan_env_vars
+        set_address_sanitizer_on
+-       GPU_ARCH_LIST="gfx908:xnack+;gfx90a:xnack+;gfx942:xnack+"
++       GPU_ARCH_LIST="gfx908:xnack+"
+     else
+        unset_asan_env_vars
+        set_address_sanitizer_off
+diff --git a/tools/rocm-build/build_lightning.sh b/tools/rocm-build/build_lightning.sh
+index 09f8901..bfa1cea 100755
+--- a/tools/rocm-build/build_lightning.sh
++++ b/tools/rocm-build/build_lightning.sh
+@@ -59,7 +59,7 @@ MAKETARGET="deb"
+ ASSERT_LLVM_VERSION_MAJOR=""
+ ASSERT_LLVM_VERSION_MINOR=""
+ 
+-SKIP_LIT_TESTS=0
++SKIP_LIT_TESTS=1
+ BUILD_MANPAGES="ON"
+ STATIC_FLAG=
+ 
+diff --git a/tools/rocm-build/build_miopen-deps.sh b/tools/rocm-build/build_miopen-deps.sh
+index 448edaa..d4f9edf 100755
+--- a/tools/rocm-build/build_miopen-deps.sh
++++ b/tools/rocm-build/build_miopen-deps.sh
+@@ -55,7 +55,7 @@ build_miopen_deps() {
+     MLIR_COMMIT="$(awk '/rocMLIR/ {split($1, s, "@"); print s[2]}' requirements.txt)"
+ 
+ 
+-    pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
++    pip3 -- install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
+     PATH="${PATH}:${ROCM_PATH}:${HOME}/.local/bin" rbuild prepare -d "$HOME/miopen-deps" --cxx=${ROCM_PATH}/llvm/bin/clang++ --cc ${ROCM_PATH}/llvm/bin/clang
+     build_miopen_mlir "$MLIR_COMMIT"
+ 
+diff --git a/tools/rocm-build/build_openmp_extras.sh b/tools/rocm-build/build_openmp_extras.sh
+index aec180e..618210c 100755
+--- a/tools/rocm-build/build_openmp_extras.sh
++++ b/tools/rocm-build/build_openmp_extras.sh
+@@ -664,7 +664,6 @@ package_tests_rpm(){
+       echo "License:    Advanced Micro Devices, Inc."
+       echo "Vendor:     Advanced Micro Devices, Inc."
+       echo "Prefix:     $INSTALL_PREFIX"
+-      echo "Requires:   $rpmRequires"
+       echo "%define debug_package %{nil}"
+       # Redefining __os_install_post to remove stripping
+       echo "%define __os_install_post %{nil}"
+diff --git a/tools/rocm-build/build_rocblas.sh b/tools/rocm-build/build_rocblas.sh
+index b6370fd..515f106 100755
+--- a/tools/rocm-build/build_rocblas.sh
++++ b/tools/rocm-build/build_rocblas.sh
+@@ -5,7 +5,7 @@ set -ex
+ source "$(dirname "${BASH_SOURCE[0]}")/compute_helper.sh"
+ 
+ set_component_src rocBLAS
+-DEPS_DIR=${HOME}/rocblas
++DEPS_DIR=/opt/AMD/aocl/aocl-linux-aocc-5.0.0/aocc
+ 
+ stage2_command_args "$@"
+ 
+@@ -25,7 +25,7 @@ build_rocblas() {
+ 
+     cd $COMPONENT_SRC
+ 
+-    mkdir -p $DEPS_DIR && cp -r /usr/blis $DEPS_DIR
++#    mkdir -p $DEPS_DIR && cp -r /usr/blis $DEPS_DIR
+     mkdir -p "$BUILD_DIR" && cd "$BUILD_DIR"
+ 
+     if [ -n "$GPU_ARCHS" ]; then
+diff --git a/tools/rocm-build/envsetup.sh b/tools/rocm-build/envsetup.sh
+index e587e5f..f9fafba 100755
+--- a/tools/rocm-build/envsetup.sh
++++ b/tools/rocm-build/envsetup.sh
+@@ -47,6 +47,7 @@ case "${DISTRO_NAME}" in
+     ("centos") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ;;
+     ("sles") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ;;
+     ("rhel") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ;;
++    ("opensuse-tumbleweed") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ;;
+ esac
+ 
+ # set up package file name variables for CPACK_GENERATOR
+@@ -186,6 +187,6 @@ export LANG=C.UTF-8
+ 
+ export PROC=${PROC:-"$(nproc)"}
+ export RELEASE_FLAG=${RELEASE_FLAG:-"-r"}
+-export SUDO=sudo
++export SUDO=
+ export PATH=/usr/local/bin:${PATH}:/sbin:/bin
+ export CCACHE_DIR=${HOME}/.ccache

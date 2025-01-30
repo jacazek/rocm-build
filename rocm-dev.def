@@ -1,0 +1,8 @@
+Bootstrap: localimage
+From: rocm-build.sif
+
+%post
+    # TODO:  implement the definition for a development container
+    zypper refresh
+    zypper --non-interactive install ...
+    zypper -n clean
