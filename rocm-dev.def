@@ -1,8 +1,18 @@
 Bootstrap: localimage
 From: rocm-build.sif
 
+%arguments
+    CONTAINER_LOCAL_REPO=""
+
+%setup
+    mkdir ${APPTAINER_ROOTFS}{{ CONTAINER_LOCAL_REPO }}
+    mkdir ${APPTAINER_ROOTFS}/opt/scripts
+
+%files
+    scripts/pytorch-build.sh /opt/scripts/
+
 %post
-    # TODO:  implement the definition for a development container
-    zypper refresh
-    zypper --non-interactive install ...
+    zypper --non-interactive addrepo file://{{ CONTAINER_LOCAL_REPO }} local_repo
+    zypper --non-interactive --no-gpg-checks refresh
+    zypper --non-interactive --no-gpg-checks install `zypper search -r local_repo | grep devel | grep -v rocm-opencl | sed -n 's/.*\s\(.*-devel\).*/\1/p'`
     zypper -n clean
