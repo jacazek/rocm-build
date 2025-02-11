@@ -1,17 +1,15 @@
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 7b9e081c8..6d887092c 100644
+index 7b9e081c8..65a701771 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -327,7 +327,8 @@ add_compile_definitions($<$<COMPILE_LANGUAGE:CXX>:HIP_COMPILER_FLAGS=${HIP_COMPI
+@@ -327,6 +327,7 @@ add_compile_definitions($<$<COMPILE_LANGUAGE:CXX>:HIP_COMPILER_FLAGS=${HIP_COMPI
  # HIP
  if( MIOPEN_BACKEND STREQUAL "HIP" OR MIOPEN_BACKEND STREQUAL "HIPOC" OR MIOPEN_BACKEND STREQUAL "HIPNOGPU")
      if(MIOPEN_USE_COMPOSABLEKERNEL)
--        find_package(composable_kernel 1.0.0 COMPONENTS device_other_operations device_gemm_operations device_conv_operations device_reduction_operations device_mha_operations)
-+        set(MIOPEN_CK_LINK_FLAGS composable_kernel::device_other_operations composable_kernel::device_gemm_operations composable_kernel::device_conv_operations composable_kernel::device_reduction_operations hip::host)
-+        find_package(composable_kernel 1.0.0 COMPONENTS device_other_operations device_gemm_operations device_conv_operations device_reduction_operations)
++        set(MIOPEN_CK_LINK_FLAGS composable_kernel::device_other_operations composable_kernel::device_gemm_operations composable_kernel::device_conv_operations composable_kernel::device_reduction_operations composable_kernel::device_mha_operations hip::host)
+         find_package(composable_kernel 1.0.0 COMPONENTS device_other_operations device_gemm_operations device_conv_operations device_reduction_operations device_mha_operations)
      endif()
      if( MIOPEN_BACKEND STREQUAL "HIPNOGPU")
-         set(MIOPEN_MODE_NOGPU 1)
 diff --git a/dev-requirements.txt b/dev-requirements.txt
 index 3d5b4d4bd..009e2f93a 100755
 --- a/dev-requirements.txt
@@ -53,7 +51,7 @@ index 2ab56e33f..21c566944 100755
 +    ROCm/rocm-recipes@92c6695449c85887962f45509b376f2eb0d284f7
      -f dev-requirements.txt
 diff --git a/requirements.txt b/requirements.txt
-index 23af7c0a5..cbd3d8768 100755
+index 23af7c0a5..8aa3076b0 100755
 --- a/requirements.txt
 +++ b/requirements.txt
 @@ -2,10 +2,10 @@ sqlite3@3.43.2 -DCMAKE_POSITION_INDEPENDENT_CODE=On
@@ -61,13 +59,13 @@ index 23af7c0a5..cbd3d8768 100755
  facebook/zstd@v1.4.5 -X subdir -DCMAKE_DIR=build/cmake
  # ROCm/half@10abd99e7815f0ca5d892f58dd7d15a23b7cf92c --build
 -ROCm/rocMLIR@rocm-5.5.0 -H sha256:a5f62769d28a73e60bc8d61022820f050e97c977c8f6f6275488db31512e1f42 -DBUILD_FAT_LIBROCKCOMPILER=1 -DCMAKE_IGNORE_PATH="/opt/conda/envs/py_3.8;/opt/conda/envs/py_3.9;/opt/conda/envs/py_3.10" -DCMAKE_IGNORE_PREFIX_PATH=/opt/conda -DCMAKE_CXX_FLAGS=" -Wno-deprecated-declarations "
-+#####ROCm/rocMLIR@rocm-5.5.0 -H sha256:a5f62769d28a73e60bc8d61022820f050e97c977c8f6f6275488db31512e1f42 -DBUILD_FAT_LIBROCKCOMPILER=1 -DCMAKE_IGNORE_PATH="/opt/conda/envs/py_3.8;/opt/conda/envs/py_3.9;/opt/conda/envs/py_3.10" -DCMAKE_IGNORE_PREFIX_PATH=/opt/conda -DCMAKE_CXX_FLAGS=" -Wno-deprecated-declarations "
++######ROCm/rocMLIR@rocm-5.5.0 -H sha256:a5f62769d28a73e60bc8d61022820f050e97c977c8f6f6275488db31512e1f42 -DBUILD_FAT_LIBROCKCOMPILER=1 -DCMAKE_IGNORE_PATH="/opt/conda/envs/py_3.8;/opt/conda/envs/py_3.9;/opt/conda/envs/py_3.10" -DCMAKE_IGNORE_PREFIX_PATH=/opt/conda -DCMAKE_CXX_FLAGS=" -Wno-deprecated-declarations "
  nlohmann/json@v3.11.2 -DJSON_MultipleHeaders=ON -DJSON_BuildTests=Off
  ROCm/FunctionalPlus@v0.2.18-p0
  ROCm/eigen@3.4.0
  ROCm/frugally-deep@9683d557eb672ee2304f80f6682c51242d748a50
 -ROCm/composable_kernel@421588131ef08dde36971bc1fa2016c005c9a0dd -DCMAKE_BUILD_TYPE=Release
-+#####ROCm/composable_kernel@421588131ef08dde36971bc1fa2016c005c9a0dd -DCMAKE_BUILD_TYPE=Release
++######ROCm/composable_kernel@421588131ef08dde36971bc1fa2016c005c9a0dd -DCMAKE_BUILD_TYPE=Release
  google/googletest@v1.14.0
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 92e4f4264..c43280e43 100644

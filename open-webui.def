@@ -1,0 +1,37 @@
+Bootstrap: localimage
+From: rocm-dev.sif
+
+# %arguments
+#     CONTAINER_LOCAL_REPO=""
+
+%setup
+    # mkdir ${APPTAINER_ROOTFS}{{ CONTAINER_LOCAL_REPO }}
+    mkdir ${APPTAINER_ROOTFS}/app
+ 
+
+# %files
+#     third_party/open-webui/package.json /app
+#     third_party/open-webui/package-lock.json /app
+    
+
+%post
+    
+
+    # rocm
+    # zypper --non-interactive addrepo file://{{ CONTAINER_LOCAL_REPO }} local_repo
+    # zypper --non-interactive --no-gpg-checks refresh
+    # zypper --non-interactive --no-gpg-checks install `zypper search -r local_repo | grep devel | grep -v rocm-opencl | sed -n 's/.*\s\(.*-devel\).*/\1/p'`
+    # zypper -n clean
+
+    # frontend
+
+    zypper --non-interactive install nodejs
+    git clone https://github.com/open-webui/open-webui.git /app
+    cd /app
+    git checkout tags/v0.5.10
+    npm ci
+    npm run build
+
+
+
+    zypper -n clean

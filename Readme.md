@@ -26,11 +26,17 @@ Build the build image running `make build` or `make rebuild` to overwrite existi
 Add any missing dependencies to %post build script and rebuild to quickly generate new build image.
 
 Example run command:
-`GPU_ARCHS=gfx908 GFXLIST=gfx908 ROCM_VERSION=6.3.1 NOBUILD=rocprofiler-systems apptainer shell --rocm --bind opt/rocm6.3.1:/opt/rocm-6.3.1 /path/to/this/repo/rocm-build.sif`
+`GPU_ARCHS=gfx908 GFXLIST=gfx908 ROCM_VERSION=6.3.1 NOBUILD=rocprofiler-systems apptainer shell --rocm --bind opt/rocm-6.3.1:/opt/rocm-6.3.1 /path/to/this/repo/rocm-build.sif`
 
 Should be run from the root working directory of ROCm project. Apptainer has readonly filesystem (unless run in sandbox mode) so binding an output directory for build artifacts.
 
 ### Dev image
+
+Image includes ROCm binaries, libraries, headers needed for development against ROCm.
+
+### Run image
+
+Image includes ROCm binaries and libraries needed for running ROCm applications.
 
 ## References
 
@@ -60,6 +66,15 @@ Not sure how they support REHL or Fedora if aqlprofile is unavailble.
 Manually copied and extracted lib. https://repo.radeon.com/rocm/apt/6.3.1/pool/main/h/hsa-amd-aqlprofile/hsa-amd-aqlprofile_1.0.0.60301-48~24.04_amd64.deb
 
 Consider just retrieving and bundling the library in the base image and create a script to extract archive, untar the files and copy library to /usr
+
+```sh
+file="hsa-amd-aqlprofile_1.0.0.60301-48~24.04_amd64.deb"
+wget https://repo.radeon.com/rocm/apt/6.3.1/pool/main/h/hsa-amd-aqlprofile/$file
+ar $file
+tar -xzf data.tar.gz
+mv
+
+```
 
 ### rocprofiler and sdk?
 

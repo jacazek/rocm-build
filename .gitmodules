@@ -1,3 +1,12 @@
 [submodule "thirdy_party/pytorch"]
 	path = thirdy_party/pytorch
 	url = https://github.com/pytorch/pytorch.git
+[submodule "thirdy_party/rccl-tests"]
+	path = thirdy_party/rccl-tests
+	url = https://github.com/ROCm/rccl-tests
+[submodule "thirdy_party/llama.cpp"]
+	path = thirdy_party/llama.cpp
+	url = https://github.com/ggerganov/llama.cpp.git
+[submodule "thirdy_party/open-webui"]
+	path = thirdy_party/open-webui
+	url = https://github.com/open-webui/open-webui.git

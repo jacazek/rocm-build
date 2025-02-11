@@ -16,15 +16,32 @@ index 5becb5a..6306fef 100644
  	mkdir -p ${HOME}/.ccache
  
 diff --git a/tools/rocm-build/build_aqlprofile.sh b/tools/rocm-build/build_aqlprofile.sh
-index d2eac59..e7cb3eb 100755
+index d2eac59..1458f19 100755
 --- a/tools/rocm-build/build_aqlprofile.sh
 +++ b/tools/rocm-build/build_aqlprofile.sh
-@@ -120,7 +120,7 @@ build() {
+@@ -119,8 +119,23 @@ build() {
+         wget -t3 -P "$PACKAGE_DEB" "${url}${package}"
          copy_pkg_files_to_rocm ${API_NAME} ${API_NAME}
      else
-         echo "$DISTRO_ID is not supported..."
+-        echo "$DISTRO_ID is not supported..."
 -        exit 2
-+#        exit 2
++        mkdir -p "$PACKAGE_DEB"
++        local rocm_ver=${ROCM_VERSION}
++        if [ ${ROCM_VERSION##*.} = 0 ]; then
++            rocm_ver=${ROCM_VERSION%.*}
++        fi
++
++        cd "${PACKAGE_DEB}"|| exit 2
++        local package="hsa-amd-aqlprofile_1.0.0.60301-48~24.04_amd64.deb"
++        wget "https://repo.radeon.com/rocm/apt/${rocm_ver}/pool/main/h/${API_NAME}/${package}"
++        if [ -z "$package" ]; then
++            echo "No package found for Ubuntu version $DISTRO_RELEASE"
++            exit 1
++        fi
++        ar -x "$package"
++        tar -xzf data.tar.gz
++        cp -r ./opt/rocm*/* "${ROCM_PATH}"
++        rm -r ./*
      fi
  
      echo "Installing $PROJ_NAME" package

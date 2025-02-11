@@ -1,12 +1,13 @@
 Bootstrap: localimage
 From: opensuse_tumbleweed.sif
 
+
 %post
 
     zypper mr -e repo-source
     zypper refresh
     zypper --non-interactive dup 
-    zypper --non-interactive install rpm-build aria2 autoconf automake bc bison bridge-utils bzip2 libcheck0 chrpath cifs-utils cmake cpio curl devscripts dos2unix doxygen fakeroot flex freeglut-devel gawk gcc glibc-devel gcc-fortran git-lfs gnupg graphviz kmod lbzip2 less libass-devel atlascpp-devel babeltrace-devel boost-devel libboost_filesystem-devel libboost_program_options-devel libboost_system-devel libbz2-devel libc++-devel libc++1 libc++abi-devel libc++abi1 libcap-devel libcurl-devel libdrm-devel libdw-devel libdw1 libdwarf-devel libelf-devel libelf1 libexpat-devel fftw3-devel perl-File-Find-Rule gflags-devel glew-devel gmp-devel glog-devel hdf5-devel libjpeg-devel leveldb-devel lmdb-devel lzma-sdk-devel mpfr-devel mpich-devel msgpack-c-devel ncurses-devel libnuma-devel libomp-devel openblas-common-devel opencv-devel libpci3 libpci3 libpciaccess-devel libpciaccess0 pciutils protobuf-devel python-devel readline-devel snappy-devel libopenssl-devel suitesparse-devel systemd-devel libtool perl-URI libva-devel libvirt-client libvirt-daemon yaml-cpp-devel llvm llvm-devel llvm Mesa-devel mpich ocaml ocaml-findlib ocl-icd-devel patchelf pigz pkg-config python312-devel python312-myst-parser python312-pip python312-Sphinx python312-pip-wheel python312-requests python312-pyaml re2c rpm rsync openssh strace sudo systemtap-sdt-devel texinfo texlive texlive-extratools texlive-plain texlive-xetex unzip vim wget xsltproc xxd pciutils python312-setuptools python312-setuptools_scm texlive-scheme-medium texlive-hanging python312-lxml python312-poetry libpfm-devel msgpack-cxx-devel
+    zypper --non-interactive install rpm-build aria2 autoconf automake bc bison bridge-utils bzip2 libcheck0 chrpath cifs-utils cmake cpio curl devscripts dos2unix doxygen fakeroot flex freeglut-devel gawk gcc glibc-devel gcc-fortran git-lfs gnupg graphviz kmod lbzip2 less libass-devel atlascpp-devel babeltrace-devel boost-devel libboost_filesystem-devel libboost_program_options-devel libboost_system-devel libbz2-devel libc++-devel libc++1 libc++abi-devel libc++abi1 libcap-devel libcurl-devel libdrm-devel libdw-devel libdw1 libdwarf-devel libelf-devel libelf1 libexpat-devel fftw3-devel perl-File-Find-Rule gflags-devel glew-devel gmp-devel glog-devel hdf5-devel libjpeg-devel leveldb-devel lmdb-devel lzma-sdk-devel mpfr-devel mpich-devel msgpack-c-devel ncurses-devel libnuma-devel libomp-devel openblas-common-devel opencv-devel libpci3 libpci3 libpciaccess-devel libpciaccess0 pciutils protobuf-devel python-devel readline-devel snappy-devel libopenssl-devel suitesparse-devel systemd-devel libtool perl-URI libva-devel libvirt-client libvirt-daemon yaml-cpp-devel llvm llvm-devel llvm Mesa-devel mpich ocaml ocaml-findlib ocl-icd-devel patchelf pigz pkg-config python312-devel python312-myst-parser python312-pip python312-Sphinx python312-pip-wheel python312-requests python312-pyaml re2c rpm rsync openssh strace sudo systemtap-sdt-devel texinfo texlive texlive-extratools texlive-plain texlive-xetex unzip vim wget xsltproc xxd pciutils python312-setuptools python312-setuptools_scm texlive-scheme-medium texlive-hanging python312-lxml python312-poetry libpfm-devel msgpack-cxx-devel fmt-devel python312-pipx ninja
     zypper --non-interactive install -t pattern devel_basis devel_C_C++
 
     rm /usr/bin/python
@@ -65,6 +66,9 @@ From: opensuse_tumbleweed.sif
     ldconfig
     cd /
     rm -rf /tmp/aocl
+
+    curl https://storage.googleapis.com/git-repo-downloads/repo > ~/usr/bin
+    chmod a+x /usr/bin/repo
 
     zypper -n clean
 

@@ -16,9 +16,16 @@ build: rocm-build.def rocm-base.sif
 rebuild: rocm-build.def rocm-base.sif
 	apptainer build --force rocm-build.sif rocm-build.def
 
-rocm-dev.sif: rocm-dev.def pytorch-build.sh # rocm-build.sif
+rocm-dev.sif: rocm-dev.def # scripts/pytorch-build.sh # rocm-build.sif
 	# echo ${CONTAINER_LOCAL_REPO}
 	apptainer build --bind ${LOCAL_RPM_REPO_PATH}:${CONTAINER_LOCAL_REPO} --build-arg CONTAINER_LOCAL_REPO=${CONTAINER_LOCAL_REPO} $@ $<
+
+rocm-run.sif: rocm-run.def # scripts/pytorch-build.sh # rocm-build.sif
+	# echo ${CONTAINER_LOCAL_REPO}
+	apptainer build --bind ${LOCAL_RPM_REPO_PATH}:${CONTAINER_LOCAL_REPO} --build-arg CONTAINER_LOCAL_REPO=${CONTAINER_LOCAL_REPO} $@ $<
+
+open-webui.sif: open-webui.def #rocm-dev.sif
+	apptainer build $@ $<
 
 apply_patches:
 	./apply_patches.sh ${PATCHES}
