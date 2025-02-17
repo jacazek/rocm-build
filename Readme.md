@@ -26,7 +26,7 @@ Build the build image running `make build` or `make rebuild` to overwrite existi
 Add any missing dependencies to %post build script and rebuild to quickly generate new build image.
 
 Example run command:
-`GPU_ARCHS=gfx908 GFXLIST=gfx908 ROCM_VERSION=6.3.1 NOBUILD=rocprofiler-systems apptainer shell --rocm --bind opt/rocm-6.3.1:/opt/rocm-6.3.1 /path/to/this/repo/rocm-build.sif`
+`GPU_ARCHS="gfx908;gfx1100" GFXLIST="gfx908;gfx1100" NOBUILD=rocprofiler-systems apptainer shell --rocm --bind opt/rocm-${ROCM_VERSION}:/opt/rocm-${ROCM_VERSION} rocm-build.sif`
 
 Should be run from the root working directory of ROCm project. Apptainer has readonly filesystem (unless run in sandbox mode) so binding an output directory for build artifacts.
 
