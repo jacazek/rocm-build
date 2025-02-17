@@ -19,10 +19,12 @@ for file in $(ls ${ROCM_ROOT_PATH}); do
         patch_path="${PATCH_OUTPUT_PATH}/${file}"
         
         cd $file
-        patch=$(git diff 2> /dev/null)
-        if [ -n "$patch" ]; then
-            mkdir -p $patch_path
-            echo "$patch" > "${patch_path}/${file}.patch"
+        if [ -d ./.git ]; then
+            patch=$(git diff 2> /dev/null)
+            if [ -n "$patch" ]; then
+                mkdir -p $patch_path
+                echo "$patch" > "${patch_path}/${file}.patch"
+            fi
         fi
         cd ..
     fi
