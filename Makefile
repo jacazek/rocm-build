@@ -48,7 +48,7 @@ open-webui.sif: open-webui.def #rocm-dev.sif
 	apptainer build $@ $<
 
 apply_patches:
-	./scripts/apply_patches.sh ${PATCHES}
+	./scripts/apply_patches.sh
 
 export_patches:
 	./scripts/export_patches.sh
