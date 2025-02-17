@@ -127,3 +127,8 @@ Apparently MHA operations are unsupported on gfx908. Not sure what is MHA and wh
 Installation of pytorch via nightly rocm builds will include many of the rocm libraries when installed.  
 May need to do a custom build of pytorch to use my libraries.  
 Could also just drop local libraries into torch lib folder...
+
+## Note about vllm
+
+Building vllm fails to find certain algorithm dependencies.
+Look into why it fails to find them. maybe a g++-14 issue so maybe only install g++-13?
