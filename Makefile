@@ -48,13 +48,13 @@ open-webui.sif: open-webui.def #rocm-dev.sif
 	apptainer build $@ $<
 
 apply_patches:
-	./apply_patches.sh ${PATCHES}
+	./scripts/apply_patches.sh ${PATCHES}
 
 export_patches:
-	./export_patches.sh
+	./scripts/export_patches.sh
 
 rpm_to_repo:
-	./rpm_to_repo.sh
+	./scripts/rpm_to_repo.sh
 
 build_sandbox:
 	apptainer build --sandbox rocm-build/ rocm-build.def
