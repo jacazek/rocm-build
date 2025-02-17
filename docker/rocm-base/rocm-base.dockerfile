@@ -52,8 +52,8 @@ RUN mkdir -p /tmp/aocl && cd /tmp/aocl && \
     ldconfig && cd / && rm -rf /tmp/aocl
 
 # Install Repo tool
-RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/local/bin/repo && \
-    chmod a+x /usr/local/bin/repo
+RUN curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo && \
+    chmod a+x /usr/bin/repo
 
 # Clean up
 RUN zypper -n clean
