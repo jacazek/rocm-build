@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-ROCM_DIR="./third_party/ROCm"
+ROCM_DIR="./third_party/ROCm_long_pathname_so_that_rpms_can_package_the_debug_info"
 source .env.local
 # if [ ! -d $ROCM_DIR ]; then
 mkdir -p $ROCM_DIR

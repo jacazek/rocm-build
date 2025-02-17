@@ -3,3 +3,4 @@ downloads/
 .env.local
 .venv
 third_party/ROCm
+third_party/ROCm_long_pathname_so_that_rpms_can_package_the_debug_info
