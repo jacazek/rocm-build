@@ -8,12 +8,11 @@ if [ -z "${ROCM_ROOT_PATH}" ]; then
     exit 1
 fi
 
-mkdir -p ${PATCH_OUTPUT_PATH}
-
-for patch in $@; do
-    patch_file="${PATCH_OUTPUT_PATH}/${patch}/${patch}.patch"
+for patch_folder in $(ls -d ${PATCH_OUTPUT_PATH}/*); do
+    patch_name=`basename $patch_folder`
+    patch_file="${patch_folder}/${patch_name}.patch"
     if [ -n "$patch_file" ]; then
-        source_path="${ROCM_ROOT_PATH}/${patch}"
+        source_path="${ROCM_ROOT_PATH}/${patch_name}"
         echo "Applying $patch_file to $source_path..."
         cd $source_path
         git apply $patch_file
