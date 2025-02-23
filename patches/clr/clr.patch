@@ -1,0 +1,13 @@
+diff --git a/opencl/tests/ocltst/CMakeLists.txt b/opencl/tests/ocltst/CMakeLists.txt
+index cd7b501ac..16774f3c5 100644
+--- a/opencl/tests/ocltst/CMakeLists.txt
++++ b/opencl/tests/ocltst/CMakeLists.txt
+@@ -14,6 +14,8 @@ endif()
+ 
+ find_package(OpenGL)
+ find_package(GLEW)
++# cmake cannot find libraries. Might be bug in cmake for GLEW
++set(GLEW_LIBRARIES /usr/lib64/libGLEW.so)
+ 
+ add_subdirectory(module/common)
+ add_subdirectory(env)

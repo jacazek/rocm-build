@@ -1,8 +1,19 @@
 Bootstrap: localimage
 From: rocm-base.sif
 
-
 %post
     zypper refresh
-    # zypper --non-interactive install fmt-devel python312-pipx ninja
+    zypper --non-interactive dup
+
+    zypper --non-interactive install gcc13 gcc13-c++ gcc13-fortran
+
+    rm /usr/bin/gcc /usr/bin/gcc-ar /usr/bin/gcc-nm /usr/bin/gcc-ranlib /usr/bin/cc /usr/bin/c++ /usr/bin/g++
+    ln -s /usr/bin/gcc-13 /usr/bin/gcc
+    ln -s /usr/bin/gcc-13 /usr/bin/cc
+    ln -s /usr/bin/g++-13 /usr/bin/g++
+    ln -s /usr/bin/g++-13 /usr/bin/c++
+    ln -s /usr/bin/gcc-ar-13 /usr/bin/gcc-ar 
+    ln -s /usr/bin/gcc-nm-13 /usr/bin/gcc-nm 
+    ln -s /usr/bin/gcc-ranlib-13 /usr/bin/gcc-ranlib
+
     zypper -n clean
