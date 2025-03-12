@@ -21,7 +21,7 @@ rocm-run.dockerfile:
 # Run from within build container
 build-%:
 	./scripts/setup.sh
-	apptainer exec --rocm --bind ${ROCM_ROOT_PATH}/opt/rocm-${ROCM_VERSION}:/opt/rocm-${ROCM_VERSION} $(PROJECT_ROOT)/rocm-build.sif bash -c 'source .env.local && cd ${ROCM_ROOT_PATH} && make -f ROCm/tools/rocm-build/ROCm.mk T_$*'
+	apptainer exec --rocm --bind ${ROCM_ROOT_PATH}/opt/rocm-${ROCM_VERSION}:/opt/rocm-${ROCM_VERSION} $(PROJECT_ROOT)/rocm-build.sif bash -c 'source .venv/bin/activate && source .env.local && cd ${ROCM_ROOT_PATH} && make -f ROCm/tools/rocm-build/ROCm.mk T_$*'
 	# echo $@
 
 clean-%:
@@ -47,11 +47,11 @@ build: rocm-build.def rocm-base.sif
 rebuild: rocm-build.def rocm-base.sif
 	apptainer build --force rocm-build.sif rocm-build.def
 
-rocm-dev.sif: rocm-dev.def # scripts/pytorch-build.sh # rocm-build.sif
+rocm-dev.sif: rocm-dev.def # rocm-build.sif
 	# echo ${CONTAINER_LOCAL_REPO}
 	apptainer build --build-arg LOCAL_ROCM_PACKAGE_REPO_URL=${LOCAL_ROCM_PACKAGE_REPO_URL} $@ $<
 
-rocm-run.sif: rocm-run.def # scripts/pytorch-build.sh # rocm-build.sif
+rocm-run.sif: rocm-run.def # rocm-build.sif
 	# echo ${CONTAINER_LOCAL_REPO}
 	apptainer build --build-arg LOCAL_ROCM_PACKAGE_REPO_URL=${LOCAL_ROCM_PACKAGE_REPO_URL} $@ $<
 

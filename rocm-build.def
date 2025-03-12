@@ -4,7 +4,6 @@ From: rocm-base.sif
 %post
     zypper refresh
     zypper --non-interactive dup
-
     zypper --non-interactive install gcc13 gcc13-c++ gcc13-fortran
 
     rm /usr/bin/gcc /usr/bin/gcc-ar /usr/bin/gcc-nm /usr/bin/gcc-ranlib /usr/bin/cc /usr/bin/c++ /usr/bin/g++
@@ -17,3 +16,4 @@ From: rocm-base.sif
     ln -s /usr/bin/gcc-ranlib-13 /usr/bin/gcc-ranlib
 
     zypper -n clean
+

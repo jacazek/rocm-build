@@ -82,7 +82,33 @@ Needs aqlprofile.
 
 ### rocprofiler-systems
 
-Has issue linking to libpapi has problem linking to pfmlib_common.o
+Has issue linking to libpapi has problem finding pfmlib_common.o when compiling libpapi.  
+The issue seems to be that the `ar xv` command is not executing, is not finding libpfm.a, is is executing from within the wrong directory.
+
+For some reason, the following in `Makefile.inc` for papi
+
+```makefile
+$(LIBRARY): $(OBJECTS)
+	rm -f $(LIBRARY)
+	$(AR) $(ARG64) rv $(LIBRARY) $(OBJECTS)
+```
+
+Does not trigger the following for `Rules.pfm4_pe`:
+
+```makefile
+$(PFM_OBJS): $(PFM_LIB_PATH)/libpfm.a
+	$(AR) xv $<
+```
+
+There seems to be a disconnect between `$(OBJECTS)` and `$(PFM_OBJS)`
+So modifying the `Makefile.inc` as follows makes it work:
+
+```diff
+$(LIBRARY): $(OBJECTS)
+	rm -f $(LIBRARY)
++	$(AR) xv $(PFM_LIB_PATH)/libpfm.a
+	$(AR) $(ARG64) rv $(LIBRARY) $(OBJECTS)
+```
 
 ### hipblaslt
 

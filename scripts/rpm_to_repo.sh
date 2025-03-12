@@ -1,5 +1,30 @@
 #!/usr/bin/env bash
 
+
+ids=$(apptainer exec rocm-build.sif bash -c "cat /etc/os-release | grep -e \"ID=\"")
+
+for kv_pair in $ids; do
+    IFS='=' read -r -a tuple <<< "$kv_pair"
+    key="${tuple[0]}"
+    value="${tuple[1]}"
+
+    # trim quotes
+    value="${value#\"}"
+    value="${value%\"}"
+
+    case "$key" in
+        "ID")
+            DISTRO_NAME=$value
+            ;;
+        "VERSION_ID")
+            DISTRO_RELEASE=$value
+            ;;
+    esac
+done
+
+DISTRO_ID="${DISTRO_NAME}-${DISTRO_RELEASE}"
+echo "${DISTRO_NAME} ${DISTRO_RELEASE} ${DISTRO_ID}"
+
 if [ ! -d "${ROCM_ROOT_PATH}" ]; then
     echo "ROCM_ROOT_PATH environment variable must be set and directory must exist".
     exit 1

@@ -9,7 +9,6 @@ From: rocm-build.sif
 #     mkdir ${APPTAINER_ROOTFS}/opt/scripts
 
 # %files
-#     scripts/pytorch-build.sh /opt/scripts/
 
 %post
     zypper --non-interactive addrepo -f {{ LOCAL_ROCM_PACKAGE_REPO_URL }} local_repo

@@ -46,7 +46,7 @@ index d2eac59..89bc957 100755
  
      echo "Installing $PROJ_NAME" package
 diff --git a/tools/rocm-build/build_composable_kernel.sh b/tools/rocm-build/build_composable_kernel.sh
-index 968f5e8..6699dab 100755
+index 968f5e8..d190c1e 100755
 --- a/tools/rocm-build/build_composable_kernel.sh
 +++ b/tools/rocm-build/build_composable_kernel.sh
 @@ -6,14 +6,14 @@ source "$(dirname "${BASH_SOURCE[0]}")/compute_helper.sh"
@@ -54,7 +54,7 @@ index 968f5e8..6699dab 100755
  set_component_src composable_kernel
  
 -GPU_ARCH_LIST="gfx908;gfx90a;gfx942;gfx1030;gfx1100;gfx1101;gfx1102;gfx1200;gfx1201"
-+GPU_ARCH_LIST="gfx908"
++GPU_ARCH_LIST="gfx908;gfx1100"
  
  build_miopen_ck() {
      echo "Start Building Composable Kernel"
@@ -126,6 +126,48 @@ index b6370fd..515f106 100755
      mkdir -p "$BUILD_DIR" && cd "$BUILD_DIR"
  
      if [ -n "$GPU_ARCHS" ]; then
+diff --git a/tools/rocm-build/build_rocprofiler-systems.sh b/tools/rocm-build/build_rocprofiler-systems.sh
+index 13425ba..530939c 100755
+--- a/tools/rocm-build/build_rocprofiler-systems.sh
++++ b/tools/rocm-build/build_rocprofiler-systems.sh
+@@ -30,7 +30,7 @@ API_NAME="rocprofiler-systems"
+ PROJ_NAME="$API_NAME"
+ LIB_NAME="lib${API_NAME}"
+ TARGET="build"
+-MAKETARGET="deb"
++MAKETARGET="rpm"
+ PACKAGE_ROOT="$(getPackageRoot)"
+ PACKAGE_LIB="$(getLibPath)"
+ 
+@@ -42,8 +42,8 @@ BUILD_TYPE="Debug"
+ MAKE_OPTS="-j 8"
+ SHARED_LIBS="ON"
+ CLEAN_OR_OUT=0
+-MAKETARGET="deb"
+-PKGTYPE="deb"
++MAKETARGET="rpm"
++PKGTYPE="rpm"
+ ASAN=0
+ 
+ VALID_STR=$(getopt -o hcraso:p:w --long help,clean,release,address_sanitizer,static,outdir:,package:,wheel -- "$@")
+@@ -144,7 +144,7 @@ build_rocprofiler_systems() {
+ 
+     git submodule sync --recursive
+ 
+-    git submodule update --init --recursive --force
++    # git submodule update --init --recursive --force
+ 
+     echo "Updated submodule status"
+     git submodule status
+@@ -189,7 +189,7 @@ build_rocprofiler_systems() {
+         cmake \
+             $(rocm_cmake_params) \
+             $(rocm_common_cmake_params) \
+-            -DROCPROFSYS_BUILD_{LIBUNWIND,DYNINST}=ON \
++            -DROCPROFSYS_BUILD_{LIBUNWIND,DYNINST,PAPI}=ON \
+             -DDYNINST_BUILD_{TBB,BOOST,ELFUTILS,LIBIBERTY}=ON \
+             -DElfUtils_DOWNLOAD_URL="$ELFUTIL_URL" \
+             -D{DYNINST,TIMEMORY}_BINUTILS_DOWNLOAD_URL="$BINUTIL_URL" \
 diff --git a/tools/rocm-build/compute_utils.sh b/tools/rocm-build/compute_utils.sh
 index ed1dc1a..059d7cf 100755
 --- a/tools/rocm-build/compute_utils.sh
