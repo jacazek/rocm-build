@@ -21,7 +21,14 @@ rocm-run.dockerfile:
 # Run from within build container
 build-%:
 	./scripts/setup.sh
-	apptainer exec --rocm --bind ${ROCM_ROOT_PATH}/opt/rocm-${ROCM_VERSION}:/opt/rocm-${ROCM_VERSION} $(PROJECT_ROOT)/rocm-build.sif bash -c 'source .venv/bin/activate && source .env.local && cd ${ROCM_ROOT_PATH} && make -f ROCm/tools/rocm-build/ROCm.mk T_$*'
+	apptainer exec --rocm --bind ${ROCM_ROOT_PATH}/opt/rocm-${ROCM_VERSION}:/opt/rocm-${ROCM_VERSION} $(PROJECT_ROOT)/rocm-build.sif bash -c 'source .venv/bin/activate && source .env.local && cd ${ROCM_ROOT_PATH} && make -f ROCm/tools/rocm-build/ROCm.mk -j ${NPROC:-$(nproc)} T_$*'
+	# echo $@
+
+# Run from within build container
+build-packages:
+	# echo $(PACKAGES)
+	./scripts/setup.sh
+	apptainer exec --rocm --bind ${ROCM_ROOT_PATH}/opt/rocm-${ROCM_VERSION}:/opt/rocm-${ROCM_VERSION} $(PROJECT_ROOT)/rocm-build.sif bash -c 'source .venv/bin/activate && source .env.local && cd ${ROCM_ROOT_PATH} && make -f ROCm/tools/rocm-build/ROCm.mk -j ${NPROC:-$(nproc)} $(PACKAGES)'
 	# echo $@
 
 clean-%:

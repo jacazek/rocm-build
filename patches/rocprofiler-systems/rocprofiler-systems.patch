@@ -1,3 +1,20 @@
+diff --git a/cmake/ConfigCPack.cmake b/cmake/ConfigCPack.cmake
+index ce5fa73..42925eb 100644
+--- a/cmake/ConfigCPack.cmake
++++ b/cmake/ConfigCPack.cmake
+@@ -12,9 +12,9 @@ function(rocprofiler_systems_parse_release)
+         file(READ /etc/os-release _OS_RELEASE)
+         if(_OS_RELEASE)
+             string(REPLACE "\"" "" _OS_RELEASE "${_OS_RELEASE}")
+-            string(REPLACE "-" " " _OS_RELEASE "${_OS_RELEASE}")
+-            string(REGEX REPLACE "NAME=.*\nVERSION=([0-9\.]+).*\nID=([a-z]+).*" "\\2-\\1"
+-                                 _SYSTEM_NAME "${_OS_RELEASE}")
++            # string(REPLACE "-" " " _OS_RELEASE "${_OS_RELEASE}")
++            string(REGEX REPLACE ".*VERSION=([0-9\.]+).*\nID=([a-z-]+).*\n" "\\2-\\1"
++                                _SYSTEM_NAME "${_OS_RELEASE}")
+         endif()
+     endif()
+     string(TOLOWER "${_SYSTEM_NAME}" _SYSTEM_NAME)
 diff --git a/external/papi b/external/papi
 --- a/external/papi
 +++ b/external/papi

@@ -15,5 +15,7 @@ From: rocm-base.sif
     ln -s /usr/bin/gcc-nm-13 /usr/bin/gcc-nm 
     ln -s /usr/bin/gcc-ranlib-13 /usr/bin/gcc-ranlib
 
+    python3 -m pip install --break-system-packages CppHeaderParser
+
     zypper -n clean
 

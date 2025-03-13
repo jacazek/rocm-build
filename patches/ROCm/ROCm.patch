@@ -16,7 +16,7 @@ index 5becb5a..f9e1dc3 100644
  	mkdir -p ${HOME}/.ccache
  
 diff --git a/tools/rocm-build/build_aqlprofile.sh b/tools/rocm-build/build_aqlprofile.sh
-index d2eac59..89bc957 100755
+index d2eac59..66b9fc3 100755
 --- a/tools/rocm-build/build_aqlprofile.sh
 +++ b/tools/rocm-build/build_aqlprofile.sh
 @@ -119,8 +119,23 @@ build() {
@@ -32,7 +32,7 @@ index d2eac59..89bc957 100755
 +        fi
 +
 +        cd "${PACKAGE_DEB}"|| exit 2
-+        local package="hsa-amd-aqlprofile_1.0.0.60302-66~24.04_amd64.deb"
++        local package="hsa-amd-aqlprofile_1.0.0.60303-74~24.04_amd64.deb"
 +        wget "https://repo.radeon.com/rocm/apt/${rocm_ver}/pool/main/h/${API_NAME}/${package}"
 +        if [ -z "$package" ]; then
 +            echo "No package found for Ubuntu version $DISTRO_RELEASE"
@@ -127,7 +127,7 @@ index b6370fd..515f106 100755
  
      if [ -n "$GPU_ARCHS" ]; then
 diff --git a/tools/rocm-build/build_rocprofiler-systems.sh b/tools/rocm-build/build_rocprofiler-systems.sh
-index 13425ba..530939c 100755
+index 13425ba..eac3bfe 100755
 --- a/tools/rocm-build/build_rocprofiler-systems.sh
 +++ b/tools/rocm-build/build_rocprofiler-systems.sh
 @@ -30,7 +30,7 @@ API_NAME="rocprofiler-systems"
@@ -155,7 +155,7 @@ index 13425ba..530939c 100755
      git submodule sync --recursive
  
 -    git submodule update --init --recursive --force
-+    # git submodule update --init --recursive --force
++    git submodule update --init --recursive # --force
  
      echo "Updated submodule status"
      git submodule status

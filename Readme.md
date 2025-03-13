@@ -110,6 +110,21 @@ $(LIBRARY): $(OBJECTS)
 	$(AR) $(ARG64) rv $(LIBRARY) $(OBJECTS)
 ```
 
+or
+
+```diff
+# Rules.pfm4_pe
++pfm_objs: $(PFM_LIB_PATH)/libpfm.a
++	$(AR) xv $<
++.PHONY: pfm_objs
+
+# Makefile.inc
+-$(LIBRARY): $(OBJECTS)
++$(LIBRARY): pfm_objs $(OBJECTS)
+	rm -f $(LIBRARY)
+	$(AR) $(ARG64) rv $(LIBRARY) $(OBJECTS)
+```
+
 ### hipblaslt
 
 needs cmake update to look for msgpack-c-config.cmake instead of msgpack-config.cmake

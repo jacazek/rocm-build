@@ -17,6 +17,8 @@ From: opensuse_tumbleweed.sif
 
     ln -s /usr/lib64/cmake/msgpack-c/msgpack-c-config.cmake /usr/lib64/cmake/msgpack-c/msgpack-config.cmake
 
+    python3 -m pip install --break-system-packages CppHeaderParser
+
     mkdir -p /tmp/barectf
     cd /tmp/barectf
     git clone https://github.com/efficios/barectf.git .
