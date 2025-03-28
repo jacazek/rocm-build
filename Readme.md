@@ -76,6 +76,8 @@ mv
 
 ```
 
+Also need to repackage aqlprofile as an RPM package for install on client.
+
 ### rocprofiler and sdk?
 
 Needs aqlprofile.
@@ -149,9 +151,13 @@ RCCL is not copied into the opt/rocm-6.3.1 directory for building the package. L
 
 ### MIOpen
 
-Need to remove device_mha_operations from CMakeLists.txt and src/CMakeLists.txt. (also moved linker flags up to same location as find pkg)
+moved linker flags up to same location as find pkg
 
-Apparently MHA operations are unsupported on gfx908. Not sure what is MHA and why it is unsupported.
+### composable kernel
+
+When building composable kernel, need to set GPU_TARGET to desired architecture to build.
+
+Unfortunately cannot specify gfx1100 and gfx908 in GPU_ARCHS list at this time. Will need to track down why specifying both prevents build from working despite docs saying that is how you specify multiple unrelated architectures.
 
 ## Post container build
 
