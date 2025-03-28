@@ -8,6 +8,7 @@ opensuse_tumbleweed.docker:
 	docker pull ${OPENSUSE_BASE_IMAGE}
 
 rocm-base.dockerfile:
+	cp ./scripts/install-dependencies.sh docker/rocm-base
 	docker build -t rocm-build:latest -t rocm-build:${ROCM_VERSION} -f docker/rocm-base/$@ docker/rocm-base 
 
 rocm-dev.dockerfile:
