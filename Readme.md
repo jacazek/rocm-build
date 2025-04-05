@@ -110,8 +110,6 @@ RCCL is not copied into the opt/rocm-6.3.1 directory for building the package. L
 
 Need to remove device_mha_operations from CMakeLists.txt and src/CMakeLists.txt. (also moved linker flags up to same location as find pkg)
 
-Apparently MHA operations are unsupported on gfx908. Not sure what is MHA and why it is unsupported.
-
 ## Post container build
 
 1. create a working directory for ROCm
