@@ -1,5 +1,5 @@
 diff --git a/cmake/ConfigCPack.cmake b/cmake/ConfigCPack.cmake
-index ce5fa73..42925eb 100644
+index 27211c5..7b6ce76 100644
 --- a/cmake/ConfigCPack.cmake
 +++ b/cmake/ConfigCPack.cmake
 @@ -12,9 +12,9 @@ function(rocprofiler_systems_parse_release)
@@ -15,9 +15,3 @@ index ce5fa73..42925eb 100644
          endif()
      endif()
      string(TOLOWER "${_SYSTEM_NAME}" _SYSTEM_NAME)
-diff --git a/external/papi b/external/papi
---- a/external/papi
-+++ b/external/papi
-@@ -1 +1 @@
--Subproject commit 3ce9001dff49e1b6b1653ffb429808795f71a0bd
-+Subproject commit 3ce9001dff49e1b6b1653ffb429808795f71a0bd-dirty

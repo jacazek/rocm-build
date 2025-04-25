@@ -1,31 +1,31 @@
 diff --git a/library/src/tensor_operation_instance/gpu/CMakeLists.txt b/library/src/tensor_operation_instance/gpu/CMakeLists.txt
-index f82176ff..114604f1 100644
+index 5b88d5f2..ad17ef61 100755
 --- a/library/src/tensor_operation_instance/gpu/CMakeLists.txt
 +++ b/library/src/tensor_operation_instance/gpu/CMakeLists.txt
-@@ -62,7 +62,7 @@ function(add_instance_library INSTANCE_NAME)
+@@ -69,7 +69,7 @@ function(add_instance_library INSTANCE_NAME)
      endforeach()
      # Do not build mha instances if gfx94 or gfx90a targets are not on the target list
      foreach(source IN LISTS ARGN)
--    if(NOT INST_TARGETS MATCHES "gfx94" AND NOT INST_TARGETS MATCHES "gfx90a" AND source MATCHES "mha")
-+    if(NOT INST_TARGETS MATCHES "gfx94" AND NOT INST_TARGETS MATCHES "gfx90a" AND NOT INST_TARGETS MATCHES "gfx908" AND source MATCHES "mha")
+-	    if(NOT INST_TARGETS MATCHES "gfx94" AND NOT INST_TARGETS MATCHES "gfx90a" AND NOT INST_TARGETS MATCHES "gfx95" AND source MATCHES "mha")
++	    if(NOT INST_TARGETS MATCHES "gfx94" AND NOT INST_TARGETS MATCHES "gfx90a" AND NOT INST_TARGETS MATCHES "gfx908" AND NOT INST_TARGETS MATCHES "gfx95" AND source MATCHES "mha")
           message("removing mha instance ${source} ")
           list(REMOVE_ITEM ARGN "${source}")
      endif()
-@@ -77,7 +77,7 @@ function(add_instance_library INSTANCE_NAME)
-             elseif(ARGN MATCHES "_wmma")
-                 list(REMOVE_ITEM INST_TARGETS gfx900 gfx906 gfx908 gfx90a gfx940 gfx941 gfx942 gfx1030)
-             elseif(ARGN MATCHES "mha")
--                list(REMOVE_ITEM INST_TARGETS gfx900 gfx906 gfx908 gfx1030 gfx1100 gfx1101 gfx1102 gfx1103 gfx1200 gfx1201)
-+                list(REMOVE_ITEM INST_TARGETS gfx900 gfx906 gfx1030 gfx1100 gfx1101 gfx1102 gfx1103 gfx1200 gfx1201)
+@@ -111,7 +111,7 @@ function(add_instance_library INSTANCE_NAME)
+             elseif(source MATCHES "_wmma")
+                 list(REMOVE_ITEM INST_TARGETS gfx900 gfx906 gfx906:xnack- gfx908:xnack+ gfx908:xnack- gfx90a:xnack+ gfx90a:xnack- gfx908 gfx90a gfx940 gfx941 gfx942 gfx1030 gfx950)
+             elseif(source MATCHES "mha")
+-                list(REMOVE_ITEM INST_TARGETS gfx900 gfx906 gfx906:xnack- gfx908:xnack- gfx908:xnack+ gfx908 gfx1030 gfx1100 gfx1101 gfx1102 gfx1103 gfx1200 gfx1201 gfx10.3-generic gfx11-generic gfx12-generic)
++                list(REMOVE_ITEM INST_TARGETS gfx900 gfx906 gfx906:xnack- gfx1030 gfx1100 gfx1101 gfx1102 gfx1103 gfx1200 gfx1201 gfx10.3-generic gfx11-generic gfx12-generic)
              endif()
-             set(offload_targets)
-             foreach(target IN LISTS INST_TARGETS)
-@@ -307,7 +307,7 @@ if(CK_DEVICE_CONV_INSTANCES)
+             #only build the fp8 gemm instances for gfx908/90a if the build argument is set
+             if(NOT CK_USE_FP8_ON_UNSUPPORTED_ARCH)
+@@ -368,7 +368,7 @@ if(CK_DEVICE_CONV_INSTANCES)
  endif()
  if(CK_DEVICE_MHA_INSTANCES)
          set(gpu_list ${INST_TARGETS})
--        if(gpu_list MATCHES "gfx94" OR gpu_list MATCHES "gfx90a")
-+        if(gpu_list MATCHES "gfx94" OR gpu_list MATCHES "gfx90a" OR gpu_list MATCHES "gfx908")
-             add_library(device_mha_operations STATIC ${CK_DEVICE_MHA_INSTANCES})
-             add_library(composablekernels::device_mha_operations ALIAS device_mha_operations)
-             target_compile_features(device_mha_operations PUBLIC)
+-        if(gpu_list MATCHES "gfx94" OR gpu_list MATCHES "gfx90a" OR gpu_list MATCHES "gfx95")
++        if(gpu_list MATCHES "gfx94" OR gpu_list MATCHES "gfx90a" OR gpu_list MATCHES "gfx908" OR gpu_list MATCHES "gfx95")
+             add_library(device_mha_operations ${CK_DEVICE_MHA_INSTANCES})
+             set_target_properties(device_mha_operations
+                 PROPERTIES

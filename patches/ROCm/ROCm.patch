@@ -1,25 +1,34 @@
 diff --git a/tools/rocm-build/ROCm.mk b/tools/rocm-build/ROCm.mk
-index 5becb5a..f9e1dc3 100644
+index 1dde463..3ce57f1 100644
 --- a/tools/rocm-build/ROCm.mk
 +++ b/tools/rocm-build/ROCm.mk
-@@ -228,9 +228,9 @@ rocm-dev: $(addprefix T_,$(filter-out ${NOBUILD},${components}))
- 	@echo rocm-dev built
+@@ -114,7 +114,7 @@ $(call adddep,roctracer,${ASAN_DEP} rocr hip_on_rocclr)
  
+ 
+ # rocm-dev points to all possible last finish components of Stage1 build.
+-rocm-dev-components :=amd_smi_lib aqlprofile aqlprofiletest comgr dbgapi devicelibs hip_on_rocclr hipcc hipify_clang \
++rocm-dev-components :=amd_smi_lib aqlprofile comgr dbgapi devicelibs hip_on_rocclr hipcc hipify_clang \
+ 	lightning rocprofiler-compute opencl_on_rocclr openmp_extras rocm_bandwidth_test rocm_smi_lib \
+ 	rocm-cmake rocm-core rocm-gdb rocminfo rocprofiler-register rocprofiler-sdk rocprofiler-systems \
+ 	rocprofiler rocr rocr_debug_agent rocrsamples roctracer
+@@ -266,9 +266,9 @@ endif
+ # starting a new one and continueing the build. The attempt
+ # is to have run-once code.
  ${OUT_DIR}/logs:
 -	sudo mkdir -p -m 775 "${ROCM_INSTALL_PATH}" && \
 -	sudo chown -R "$(shell id -u):$(shell id -g)" "/opt"
--	sudo chown -R "$(shell id -u):$(shell id -g)" "/home/$(shell id -un)"
+-	sudo chown "$(shell id -u):$(shell id -g)" "/home/$(shell id -un)"
 +	mkdir -p -m 775 "${ROCM_INSTALL_PATH}"
-+# 	chown -R "$(shell id -u):$(shell id -g)" "/opt"
-+#	sudo chown -R "$(shell id -u):$(shell id -g)" "/home/$(shell id -un)"
++#	sudo chown -R "$(shell id -u):$(shell id -g)" "/opt"
++#	sudo chown "$(shell id -u):$(shell id -g)" "/home/$(shell id -un)"
  	mkdir -p "${@}"
  	mkdir -p ${HOME}/.ccache
  
 diff --git a/tools/rocm-build/build_aqlprofile.sh b/tools/rocm-build/build_aqlprofile.sh
-index d2eac59..66b9fc3 100755
+index d2eac59..15fce8c 100755
 --- a/tools/rocm-build/build_aqlprofile.sh
 +++ b/tools/rocm-build/build_aqlprofile.sh
-@@ -119,8 +119,23 @@ build() {
+@@ -119,8 +119,22 @@ build() {
          wget -t3 -P "$PACKAGE_DEB" "${url}${package}"
          copy_pkg_files_to_rocm ${API_NAME} ${API_NAME}
      else
@@ -30,9 +39,8 @@ index d2eac59..66b9fc3 100755
 +        if [ ${ROCM_VERSION##*.} = 0 ]; then
 +            rocm_ver=${ROCM_VERSION%.*}
 +        fi
-+
 +        cd "${PACKAGE_DEB}"|| exit 2
-+        local package="hsa-amd-aqlprofile_1.0.0.60303-74~24.04_amd64.deb"
++        local package="hsa-amd-aqlprofile_1.0.0.60400-47~24.04_amd64.deb"
 +        wget "https://repo.radeon.com/rocm/apt/${rocm_ver}/pool/main/h/${API_NAME}/${package}"
 +        if [ -z "$package" ]; then
 +            echo "No package found for Ubuntu version $DISTRO_RELEASE"
@@ -46,15 +54,15 @@ index d2eac59..66b9fc3 100755
  
      echo "Installing $PROJ_NAME" package
 diff --git a/tools/rocm-build/build_composable_kernel.sh b/tools/rocm-build/build_composable_kernel.sh
-index 968f5e8..d190c1e 100755
+index 7fbebfb..2983e90 100755
 --- a/tools/rocm-build/build_composable_kernel.sh
 +++ b/tools/rocm-build/build_composable_kernel.sh
-@@ -6,14 +6,14 @@ source "$(dirname "${BASH_SOURCE[0]}")/compute_helper.sh"
- 
+@@ -10,14 +10,14 @@ ENABLE_ADDRESS_SANITIZER=false
  set_component_src composable_kernel
- 
+ disable_debug_package_generation
+ # Set the GPU_ARCH_LIST to the supported GPUs needed after https://github.com/ROCm/composable_kernel/pull/1536/
 -GPU_ARCH_LIST="gfx908;gfx90a;gfx942;gfx1030;gfx1100;gfx1101;gfx1102;gfx1200;gfx1201"
-+GPU_ARCH_LIST="gfx908;gfx1100"
++GPU_ARCH_LIST="gfx908"
  
  build_miopen_ck() {
      echo "Start Building Composable Kernel"
@@ -66,71 +74,68 @@ index 968f5e8..d190c1e 100755
      else
         unset_asan_env_vars
         set_address_sanitizer_off
+@@ -56,7 +56,7 @@ build_miopen_ck() {
+         -DCMAKE_CXX_COMPILER=$(set_build_variables __CLANG++__) \
+         -DCMAKE_C_COMPILER=$(set_build_variables __CLANG__) \
+         ${LAUNCHER_FLAGS} \
+-        -DGPU_ARCHS="${GPU_ARCH_LIST}" \
++        -DGPU_TARGETS="${GPU_ARCH_LIST}" \
+         "$COMPONENT_SRC"
+ 
+     cmake --build . -- -j${PROC} package
 diff --git a/tools/rocm-build/build_lightning.sh b/tools/rocm-build/build_lightning.sh
-index 09f8901..bfa1cea 100755
+index 5126689..25a15e0 100755
 --- a/tools/rocm-build/build_lightning.sh
 +++ b/tools/rocm-build/build_lightning.sh
-@@ -59,7 +59,7 @@ MAKETARGET="deb"
+@@ -73,7 +73,7 @@ MAKETARGET="deb"
  ASSERT_LLVM_VERSION_MAJOR=""
  ASSERT_LLVM_VERSION_MINOR=""
  
 -SKIP_LIT_TESTS=0
 +SKIP_LIT_TESTS=1
  BUILD_MANPAGES="ON"
+ LLVM_INSTALL_UTILS="ON"
  STATIC_FLAG=
- 
 diff --git a/tools/rocm-build/build_miopen-deps.sh b/tools/rocm-build/build_miopen-deps.sh
-index 448edaa..d4f9edf 100755
+index fb3ef0d..66e4a5a 100755
 --- a/tools/rocm-build/build_miopen-deps.sh
 +++ b/tools/rocm-build/build_miopen-deps.sh
-@@ -55,7 +55,7 @@ build_miopen_deps() {
+@@ -49,7 +49,7 @@ build_miopen_deps() {
      MLIR_COMMIT="$(awk '/rocMLIR/ {split($1, s, "@"); print s[2]}' requirements.txt)"
  
  
 -    pip3 install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
 +    pip3 -- install https://github.com/RadeonOpenCompute/rbuild/archive/master.tar.gz
-     PATH="${PATH}:${ROCM_PATH}:${HOME}/.local/bin" rbuild prepare -d "$HOME/miopen-deps" --cxx=${ROCM_PATH}/llvm/bin/clang++ --cc ${ROCM_PATH}/llvm/bin/clang
+     PATH="${PATH}:${ROCM_PATH}:${HOME}/.local/bin" rbuild prepare -d "$HOME/miopen-deps" --cxx="$(set_build_variables __CLANG++__)" --cc "$(set_build_variables __CLANG__)"
      build_miopen_mlir "$MLIR_COMMIT"
  
-diff --git a/tools/rocm-build/build_openmp_extras.sh b/tools/rocm-build/build_openmp_extras.sh
-index aec180e..618210c 100755
---- a/tools/rocm-build/build_openmp_extras.sh
-+++ b/tools/rocm-build/build_openmp_extras.sh
-@@ -664,7 +664,6 @@ package_tests_rpm(){
-       echo "License:    Advanced Micro Devices, Inc."
-       echo "Vendor:     Advanced Micro Devices, Inc."
-       echo "Prefix:     $INSTALL_PREFIX"
--      echo "Requires:   $rpmRequires"
-       echo "%define debug_package %{nil}"
-       # Redefining __os_install_post to remove stripping
-       echo "%define __os_install_post %{nil}"
 diff --git a/tools/rocm-build/build_rocblas.sh b/tools/rocm-build/build_rocblas.sh
-index b6370fd..515f106 100755
+index cb23269..c7b53b1 100755
 --- a/tools/rocm-build/build_rocblas.sh
 +++ b/tools/rocm-build/build_rocblas.sh
 @@ -5,7 +5,7 @@ set -ex
- source "$(dirname "${BASH_SOURCE[0]}")/compute_helper.sh"
+ source "$(dirname "${BASH_SOURCE[0]}")/compute_utils.sh"
  
  set_component_src rocBLAS
 -DEPS_DIR=${HOME}/rocblas
 +DEPS_DIR=/opt/AMD/aocl/aocl-linux-aocc-5.0.0/aocc
  
  stage2_command_args "$@"
- 
-@@ -25,7 +25,7 @@ build_rocblas() {
- 
+ disable_debug_package_generation
+@@ -32,7 +32,7 @@ build_rocblas() {
      cd $COMPONENT_SRC
  
+     CXX=$(set_build_variables __AMD_CLANG_++__)
 -    mkdir -p $DEPS_DIR && cp -r /usr/blis $DEPS_DIR
-+#    mkdir -p $DEPS_DIR && cp -r /usr/blis $DEPS_DIR
++    #mkdir -p $DEPS_DIR && cp -r /usr/blis $DEPS_DIR
      mkdir -p "$BUILD_DIR" && cd "$BUILD_DIR"
  
-     if [ -n "$GPU_ARCHS" ]; then
+     # if ENABLE_GPU_ARCH is set in env by Job parameter ENABLE_GPU_ARCH, then set GFX_ARCH to that value. This will override any of the case values above
 diff --git a/tools/rocm-build/build_rocprofiler-systems.sh b/tools/rocm-build/build_rocprofiler-systems.sh
-index 13425ba..eac3bfe 100755
+index 1f7fb98..303870c 100755
 --- a/tools/rocm-build/build_rocprofiler-systems.sh
 +++ b/tools/rocm-build/build_rocprofiler-systems.sh
-@@ -30,7 +30,7 @@ API_NAME="rocprofiler-systems"
+@@ -31,7 +31,7 @@ API_NAME="rocprofiler-systems"
  PROJ_NAME="$API_NAME"
  LIB_NAME="lib${API_NAME}"
  TARGET="build"
@@ -138,8 +143,8 @@ index 13425ba..eac3bfe 100755
 +MAKETARGET="rpm"
  PACKAGE_ROOT="$(getPackageRoot)"
  PACKAGE_LIB="$(getLibPath)"
- 
-@@ -42,8 +42,8 @@ BUILD_TYPE="Debug"
+ # PACKAGE_INCLUDE="$(getIncludePath)"
+@@ -43,8 +43,8 @@ BUILD_TYPE="Debug"
  MAKE_OPTS="-j 8"
  SHARED_LIBS="ON"
  CLEAN_OR_OUT=0
@@ -149,55 +154,56 @@ index 13425ba..eac3bfe 100755
 +PKGTYPE="rpm"
  ASAN=0
  
- VALID_STR=$(getopt -o hcraso:p:w --long help,clean,release,address_sanitizer,static,outdir:,package:,wheel -- "$@")
-@@ -144,7 +144,7 @@ build_rocprofiler_systems() {
- 
+ #parse the arguments
+@@ -150,7 +150,7 @@ build_rocprofiler_systems() {
+     # copy the new URL to your local config
      git submodule sync --recursive
- 
+     # force update the submodule from the new URL
 -    git submodule update --init --recursive --force
 +    git submodule update --init --recursive # --force
  
      echo "Updated submodule status"
      git submodule status
-@@ -189,7 +189,7 @@ build_rocprofiler_systems() {
-         cmake \
-             $(rocm_cmake_params) \
-             $(rocm_common_cmake_params) \
--            -DROCPROFSYS_BUILD_{LIBUNWIND,DYNINST}=ON \
-+            -DROCPROFSYS_BUILD_{LIBUNWIND,DYNINST,PAPI}=ON \
-             -DDYNINST_BUILD_{TBB,BOOST,ELFUTILS,LIBIBERTY}=ON \
-             -DElfUtils_DOWNLOAD_URL="$ELFUTIL_URL" \
-             -D{DYNINST,TIMEMORY}_BINUTILS_DOWNLOAD_URL="$BINUTIL_URL" \
 diff --git a/tools/rocm-build/compute_utils.sh b/tools/rocm-build/compute_utils.sh
-index ed1dc1a..059d7cf 100755
+index 930099f..a393576 100755
 --- a/tools/rocm-build/compute_utils.sh
 +++ b/tools/rocm-build/compute_utils.sh
-@@ -321,7 +321,7 @@ copy_if(){
+@@ -7,7 +7,7 @@ TOPOLOGY_SYSFS_DIR=/sys/devices/virtual/kfd/kfd/topology/nodes
+ 
+ # Set python version
+ # TODO: Get the python version from build arguments
+-PY_COMMAND=python3.6
++PY_COMMAND=python3.12
+ # Set a sensible default value for DASH_JAY in case none is provided
+ DASH_JAY=${DASH_JAY:-"-j $(nproc)"}
+ 
+@@ -354,7 +354,7 @@ copy_if() {
      shift 3
      mkdir -p "$dir"
-     if [[ "$selector" =~ "$type" ]] ; then
+     if [[ "${selector,,}" =~ "${type,,}" ]] ; then
 -	cp -a "$@" "$dir"
 +	cp "$@" "$dir"
      fi
      # handle ddeb files as well, renaming them on the way
      for f
 diff --git a/tools/rocm-build/envsetup.sh b/tools/rocm-build/envsetup.sh
-index e587e5f..f9fafba 100755
+index fff230b..4330332 100755
 --- a/tools/rocm-build/envsetup.sh
 +++ b/tools/rocm-build/envsetup.sh
-@@ -47,6 +47,7 @@ case "${DISTRO_NAME}" in
-     ("centos") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ;;
-     ("sles") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ;;
-     ("rhel") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ;;
+@@ -65,6 +65,7 @@ case "${DISTRO_NAME}" in
+     ("centos") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ROCM_PKGTYPE=RPM ;;
+     ("sles") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ROCM_PKGTYPE=RPM ;;
+     ("rhel") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ROCM_PKGTYPE=RPM ;;
 +    ("opensuse-tumbleweed") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ;;
- esac
- 
- # set up package file name variables for CPACK_GENERATOR
-@@ -186,6 +187,6 @@ export LANG=C.UTF-8
+     ("mariner") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ROCM_PKGTYPE=RPM ;;
+     ("azurelinux") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ROCM_PKGTYPE=RPM ;;
+     ("almalinux") export CPACKGEN=RPM PACKAGEEXT=rpm PKGTYPE=rpm ROCM_PKGTYPE=RPM ;;
+@@ -261,7 +262,7 @@ export LANG=C.UTF-8
  
  export PROC=${PROC:-"$(nproc)"}
- export RELEASE_FLAG=${RELEASE_FLAG:-"-r"}
+ # export RELEASE_FLAG=${RELEASE_FLAG:-"-r"}
 -export SUDO=sudo
 +export SUDO=
  export PATH=/usr/local/bin:${PATH}:/sbin:/bin
  export CCACHE_DIR=${HOME}/.ccache
+ 

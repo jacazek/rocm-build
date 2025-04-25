@@ -76,4 +76,26 @@ rm -rf /tmp/aocl
 curl https://storage.googleapis.com/git-repo-downloads/repo > /usr/bin/repo
 chmod a+x /usr/bin/repo
 
+
+# Build ccache from the source
+cd /tmp
+git clone https://github.com/ccache/ccache -b v4.7.5
+cd ccache
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release ..
+make
+make install
+cd /tmp 
+rm -rf ccache
+
+# symlinks for ccache
+ln -s /usr/local/bin/ccache /usr/local/bin/gcc
+ln -s /usr/local/bin/ccache /usr/local/bin/g++
+ln -s /usr/local/bin/ccache /usr/local/bin/cc
+ln -s /usr/local/bin/ccache /usr/local/bin/c++
+ln -s /usr/local/bin/ccache /usr/local/bin/amdclang
+ln -s /usr/local/bin/ccache /usr/local/bin/amdclang++
+ln -s /usr/local/bin/ccache /usr/local/bin/hipcc
+
 zypper -n clean

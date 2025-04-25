@@ -1,3 +1,16 @@
+diff --git a/hipamd/src/CMakeLists.txt b/hipamd/src/CMakeLists.txt
+index 5f6736d8d..53a0803b2 100644
+--- a/hipamd/src/CMakeLists.txt
++++ b/hipamd/src/CMakeLists.txt
+@@ -235,7 +235,7 @@ if(USE_PROF_API)
+   set(PROF_API_GEN "${CMAKE_CURRENT_SOURCE_DIR}/hip_prof_gen.py")
+   set(PROF_API_LOG "${PROJECT_BINARY_DIR}/hip_prof_gen.log.txt")
+   set(PROF_API_NEWHDR "${PROJECT_BINARY_DIR}/new_header.h")
+-  find_package(Python3 COMPONENTS Interpreter REQUIRED)
++  find_package(Python3 "3.12" COMPONENTS Interpreter EXACT REQUIRED)
+ 
+   execute_process(COMMAND ${Python3_EXECUTABLE} -c "import CppHeaderParser"
+                   RESULT_VARIABLE CPP_HEADER_PARSER
 diff --git a/opencl/tests/ocltst/CMakeLists.txt b/opencl/tests/ocltst/CMakeLists.txt
 index cd7b501ac..16774f3c5 100644
 --- a/opencl/tests/ocltst/CMakeLists.txt

@@ -45,7 +45,7 @@ https://github.com/ROCm/ROCm?tab=readme-ov-file#building-the-rocm-source-code
 
 ## nobuild
 
-1. rocprofile-systems. Need to sort out dependency issue.
+`export NOBUILD="rocrsamples rocm_bandwidth_test"`
 
 ## Project issues
 
@@ -56,6 +56,10 @@ https://github.com/ROCm/ROCm?tab=readme-ov-file#building-the-rocm-source-code
 ### openmp-extras
 
 RPM test build script has an invalid empty `Requires:` attributes. Is should be removed.
+
+### aqlprofiletest
+
+Doesn't exist... fails the build.
 
 ### aqlprofile
 
@@ -158,6 +162,19 @@ moved linker flags up to same location as find pkg
 When building composable kernel, need to set GPU_TARGET to desired architecture to build.
 
 Unfortunately cannot specify gfx1100 and gfx908 in GPU_ARCHS list at this time. Will need to track down why specifying both prevents build from working despite docs saying that is how you specify multiple unrelated architectures.
+
+### hip on rocclr
+
+hipamd/src/cmakelists.txt
+
+It looks for any version of python3 and finds 3.13 if installed.
+We want to use 3.12 so specify `EXACT` version of `3.12` in `find_package` command.
+
+`  find_package(Python3 "3.12" COMPONENTS Interpreter EXACT REQUIRED)`
+
+### rpp
+
+hmmm
 
 ## Post container build
 
